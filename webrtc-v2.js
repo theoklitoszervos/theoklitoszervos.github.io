@@ -283,7 +283,7 @@ const PHONE = window.PHONE = config => {
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     PHONE.dial = function( number, servers ) {
         if (!!servers) add_servers(servers);
-        if (!number) return debugcb("Missing Number to Dial.");
+        if (!number) return debugcb("προσθεσε αριθμο");
 
         let talk = get_conversation(number);
         let pc   = talk.pc;
@@ -663,7 +663,7 @@ function socket(setup) {
         ,   reconnect  = setup.reconnect     || (()=>{})
         ,   timetoken  = setup.timetoken     || '0'
         ,   timeout    = setup.timeout       || 300000
-        ,   windy      = setup.windowing     || 10
+        ,   windy      = setup.windowing     || 20
         ,   restore    = setup.restore 
         ,   windowing  = 10
         ,   connected  = true
