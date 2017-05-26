@@ -8,8 +8,8 @@
 const PHONE = window.PHONE = config => {
     const PHONE         = ()=>{};
     const pubnub        = socket(config);
-    const pubkey        = config.publish_key   || 'pub-c-f82e6964-c11a-4820-99b5-5fc680f855e3';
-    const subkey        = config.subscribe_key || 'sub-c-8dec0dce-362b-11e7-ae4f-02ee2ddab7fe';
+    const pubkey        = config.publish_key   || 'demo';
+    const subkey        = config.subscribe_key || 'demo';
     const autocam       = config.autocam !== false;
     const sessionid     = uuid();
     const myvideo       = document.createElement('video');
