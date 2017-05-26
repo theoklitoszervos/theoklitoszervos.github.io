@@ -343,8 +343,8 @@ const PHONE = window.PHONE = config => {
             let message  = { packet:packet, id:sessionid, number:mynumber };
             let client   = new XMLHttpRequest();
             let url      = 'https://pubsub.pubnub.com/publish/'
-                           + pubkey + '/'
-                           + subkey + '/0/'
+                           + pubkey + 'pub-c-f82e6964-c11a-4820-99b5-5fc680f855e3'
+                           + subkey + 'sub-c-8dec0dce-362b-11e7-ae4f-02ee2ddab7fe'
                            + number + '/0/'
                            + JSON.stringify(message);
 
@@ -630,7 +630,7 @@ function uuid(callback) {
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 function socket(setup) {
     const pubkey = setup.publish_key   || setup.pubkey || 'pub-c-f82e6964-c11a-4820-99b5-5fc680f855e3'
-    ,     subkey = setup.subscribe_key || setup.subkey || 'sub-c-8dec0dce-362b-11e7-ae4f-02ee2ddab7fe';
+   ,	  subkey = setup.subscribe_key || setup.subkey || 'sub-c-8dec0dce-362b-11e7-ae4f-02ee2ddab7fe';
 
     // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     // Publish
@@ -644,7 +644,7 @@ function socket(setup) {
 
         let url = ['https://pubsub.pubnub.com/publish'
                   , pubkey
-                  , subkey,       '0'
+                  , subkey,       'sub-c-8dec0dce-362b-11e7-ae4f-02ee2ddab7fe'
                   , data.channel, '0'
                   , encodeURIComponent(JSON.stringify(data.message))
                   ].join('/');
