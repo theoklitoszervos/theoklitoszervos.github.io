@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-    <title>WebRTC</title>
+    <title>WebRTC Simple Calling API + Mobile</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
@@ -19,13 +19,13 @@
         <!-- =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= -->
         <div class="col-sm-6">
             <div id="my-number-section" class="text-center">
-                <div id="my-number">Περιμενετε</div>
+                <div id="my-number">LOADING</div>
                 <div id="my-number-title" class="hidden-sm hidden-xs">
-                    αριθμος: <strong>ο αριθμος σας ειναι..</strong>
+                    this is <strong>your phone number</strong>
                 </div>
                 <div id="my-number-permalink">
                     <span class="glyphicon glyphicon-link"></span>
-                    διευθυνση επικοινωνιας:
+                    call link:
                     <a id="my-number-link" href="...">https://...</a>
                 </div>
             </div>
@@ -66,7 +66,7 @@
                     <div class="input-group-addon">
                         <span class="glyphicon glyphicon-th"></span>
                     </div>
-                    <input id="number" class="form-control" type="number" placeholder="αριθμος καλουντος ">
+                    <input id="number" class="form-control" type="number" placeholder="Type Recipient's #">
                     </div></div>
                 </div>
                 <div class="col-sm-6 col-xs-5 dial-buttons">
@@ -85,12 +85,18 @@
     </div>
 </div>
 
-
+<!-- =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- -->
+<!-- WebRTC Peer Connections -->
+<!-- =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- -->
+<!-- IMPORTANT: THIS IS AN UNMINIFIED DEVELOPMENT PUBNUB LIBRARY 
+    replace this with the latest versioned, minified CDN lib link before 
+    you deploy your app to a production enviornment.
+    https://github.com/pubnub/javascript#cdn-links
+-->
 <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.10.0.min.js"></script>
 
 <!-- WebRTC SDK -->
-<script src="webrtc-v2.js"></script>
-
+<script src="js/webrtc-v2.js"></script>
 <script>(function(){
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -99,7 +105,7 @@
 var urlargs         = urlparams();
 var my_number       = PUBNUB.$('my-number');
 var my_link         = PUBNUB.$('my-number-link');
-var number          = urlargs.number || Math.floor(Math.random()*100+1);
+var number          = urlargs.number || Math.floor(Math.random()*999+1);
 
 my_number.number    = number;
 my_number.innerHTML = ''+my_number.number;
@@ -161,7 +167,8 @@ function connected(session) {
     video_out.appendChild(session.video);
 
     PUBNUB.$('number').value = ''+session.number;
-    console.log("epitixis");
+    sounds.play('sound/hi');
+    console.log("Hi!");
 }
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -170,8 +177,10 @@ function connected(session) {
 function ended(session) {
     clearInterval(thumbnail.ival);
     thumbnail.ival = 0;
+    set_icon('facetime-video');
     img_out.innerHTML = '';
-    console.log("aposindesi");
+    sounds.play('sound/goodbye');
+    console.log("Bye!");
 }
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -211,31 +220,31 @@ phone.ready(function(){
     }
 
     // Make a Phone Call
-    PUBNUB.bind( 'mousedown,touchstart', PUBNUB.$('κληση'), function(){
+    PUBNUB.bind( 'mousedown,touchstart', PUBNUB.$('dial'), function(){
         var number = PUBNUB.$('number').value;
         if (!number) return;
         dial(number);
     } );
 
     // Hanup Call
-    PUBNUB.bind( 'mousedown,touchstart', PUBNUB.$('βιντεο'), function() {
+    PUBNUB.bind( 'mousedown,touchstart', PUBNUB.$('hangup'), function() {
         phone.hangup();
         set_icon('facetime-video');
     } );
 
     // Take Picture
-    PUBNUB.bind( 'mousedown,touchstart', PUBNUB.$('στιγμιοτυπο'), function() {
+    PUBNUB.bind( 'mousedown,touchstart', PUBNUB.$('snap'), function() {
         var photo = phone.snap();
 
         if (!(photo && photo.image))
             return console.error(
-                '%c σφαλμα, πρεπει να γινει επικοινωνια μεταξυ 2.',
-                'font-size:60px;background:#f00;color:#fff'
+                '%c Connect your video with a partner first.',
+                'font-size:30px;background:#f00;color:#fff'
             );
 
         img_self.innerHTML = ' ';
         img_self.appendChild(photo.image);
-        setTimeout( function() { img_self.innerHTML = ' ' }, 550 );
+        setTimeout( function() { img_self.innerHTML = ' ' }, 750 );
     } );
 });
 
@@ -258,7 +267,7 @@ phone.receive(function(session){
     session.ended(ended);
 
     if (!thumbnail.ival)
-        thumbnail.ival = setInterval( () => thumbnail(session), 200 );
+        thumbnail.ival = setInterval( () => thumbnail(session), 100 );
 });
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -275,7 +284,7 @@ PUBNUB.bind( 'keydown', chat_in, function(e) {
     if (!chat_in.value.replace( /\s+/g, '' )) return true;
 
     phone.send({ text : chat_in.value });
-    add_chat( my_number.number + " (εγω)", chat_in.value );
+    add_chat( my_number.number + " (Me)", chat_in.value );
     chat_in.value = '';
 } )
 
@@ -312,7 +321,7 @@ function safetxt(text) {
 // Problem Occured During Init
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 phone.unable(function(details){
-    console.log("σφαλμα, κανε επανεκκινηση.");
+    console.log("Alert! - Reload Page.");
     console.log(details);
     set_icon('remove');
 });
