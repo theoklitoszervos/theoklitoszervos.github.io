@@ -8,8 +8,8 @@
 const PHONE = window.PHONE = config => {
     const PHONE         = ()=>{};
     const pubnub        = socket(config);
-    const pubkey        = config.publish_key   || 'pub-c-f82e6964-c11a-4820-99b5-5fc680f855e3';
-    const subkey        = config.subscribe_key || 'sub-c-8dec0dce-362b-11e7-ae4f-02ee2ddab7fe';
+    const pubkey        = config.publish_key   || 'demo';
+    const subkey        = config.subscribe_key || 'demo';
     const autocam       = config.autocam !== false;
     const sessionid     = uuid();
     const myvideo       = document.createElement('video');
@@ -283,7 +283,7 @@ const PHONE = window.PHONE = config => {
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     PHONE.dial = function( number, servers ) {
         if (!!servers) add_servers(servers);
-        if (!number) return debugcb("προσθεσε αριθμο");
+        if (!number) return debugcb("Missing Number to Dial.");
 
         let talk = get_conversation(number);
         let pc   = talk.pc;
@@ -343,8 +343,8 @@ const PHONE = window.PHONE = config => {
             let message  = { packet:packet, id:sessionid, number:mynumber };
             let client   = new XMLHttpRequest();
             let url      = 'https://pubsub.pubnub.com/publish/'
-                           + pubkey + 'pub-c-f82e6964-c11a-4820-99b5-5fc680f855e3'
-                           + subkey + 'sub-c-8dec0dce-362b-11e7-ae4f-02ee2ddab7fe'
+                           + pubkey + '/'
+                           + subkey + '/0/'
                            + number + '/0/'
                            + JSON.stringify(message);
 
@@ -629,8 +629,8 @@ function uuid(callback) {
 // PubNub Socket Lib
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 function socket(setup) {
-    const pubkey = setup.publish_key   || setup.pubkey || 'pub-c-f82e6964-c11a-4820-99b5-5fc680f855e3'
-   ,	  subkey = setup.subscribe_key || setup.subkey || 'sub-c-8dec0dce-362b-11e7-ae4f-02ee2ddab7fe';
+    const pubkey = setup.publish_key   || setup.pubkey || 'demo'
+    ,     subkey = setup.subscribe_key || setup.subkey || 'demo';
 
     // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     // Publish
@@ -644,7 +644,7 @@ function socket(setup) {
 
         let url = ['https://pubsub.pubnub.com/publish'
                   , pubkey
-                  , subkey,       'sub-c-8dec0dce-362b-11e7-ae4f-02ee2ddab7fe'
+                  , subkey,       '0'
                   , data.channel, '0'
                   , encodeURIComponent(JSON.stringify(data.message))
                   ].join('/');
@@ -663,7 +663,7 @@ function socket(setup) {
         ,   reconnect  = setup.reconnect     || (()=>{})
         ,   timetoken  = setup.timetoken     || '0'
         ,   timeout    = setup.timeout       || 300000
-        ,   windy      = setup.windowing     || 20
+        ,   windy      = setup.windowing     || 10
         ,   restore    = setup.restore 
         ,   windowing  = 10
         ,   connected  = true
