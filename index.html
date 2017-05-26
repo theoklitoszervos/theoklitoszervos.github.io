@@ -21,7 +21,7 @@
             <div id="my-number-section" class="text-center">
                 <div id="my-number">Περιμενετε</div>
                 <div id="my-number-title" class="hidden-sm hidden-xs">
-                    this is <strong>ο αριθμος σας ειναι..</strong>
+                    αριθμος: <strong>ο αριθμος σας ειναι..</strong>
                 </div>
                 <div id="my-number-permalink">
                     <span class="glyphicon glyphicon-link"></span>
@@ -264,8 +264,8 @@ phone.receive(function(session){
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 // Chat
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-var chat_in  = PUBNUB.$('chat-input');
-var chat_out = PUBNUB.$('chat-output');
+var chat_in  = PUBNUB.$('pubnub-chat-input');
+var chat_out = PUBNUB.$('pubnub-chat-output');
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 // Send Chat MSG and update UI for Sending Messages
