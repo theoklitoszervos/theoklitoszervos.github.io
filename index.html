@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <head>
-    <title>WebRTC Simple Calling API + Mobile</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
-    <link href="css/styles.css" rel="stylesheet" type="text/css">
+    <title>WebRTC</title>
+    
 </head>
 <body>
 
@@ -19,18 +16,18 @@
         <!-- =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= -->
         <div class="col-sm-6">
             <div id="my-number-section" class="text-center">
-                <div id="my-number">LOADING</div>
+                <div id="my-number">Περιμενετε</div>
                 <div id="my-number-title" class="hidden-sm hidden-xs">
-                    this is <strong>your phone number</strong>
+                    Για συνδεση, <strong>ο αριθμος ειναι</strong>
                 </div>
                 <div id="my-number-permalink">
-                    <span class="glyphicon glyphicon-link"></span>
-                    call link:
+                    
+                    
                     <a id="my-number-link" href="...">https://...</a>
                 </div>
             </div>
             <div id="pubnub-chat-section" class="text-center">
-                <input id="pubnub-chat-input" type="text" placeholder="chat here">
+                <input id="pubnub-chat-input" type="text" placeholder="chat">
                 <div id="pubnub-chat-output"><div></div></div>
             </div>
         </div>
@@ -47,15 +44,9 @@
                             <div id="video-self"></div>
                         </div>
                         <div id="video-display">
-                            <span class="glyphicon glyphicon-flash"></span>
                         </div>
                     </div>
-                    <div id="pubnub-relative">
-                        <div id="video-thumbnail"></div>
-                        <div id="pubnub-logo">
-                            <div id="pubnub-logo-img"></div>
-                        </div>
-                    </div>
+                   
                 </div>
             </div>
             
@@ -63,21 +54,16 @@
             <div class="row">
                 <div class="col-sm-6 col-xs-7">
                     <div class="form-group"><div class="input-group">
-                    <div class="input-group-addon">
-                        <span class="glyphicon glyphicon-th"></span>
-                    </div>
-                    <input id="number" class="form-control" type="number" placeholder="Type Recipient's #">
+                    <div class="input-group-addon"></div>
+                    <input id="number" class="form-control" type="number" placeholder="Αριθμος">
                     </div></div>
                 </div>
                 <div class="col-sm-6 col-xs-5 dial-buttons">
-                    <button id="dial" class="btn btn-primary">
-                        <span class="glyphicon glyphicon-earphone"></span>
+                    <button id="dial">Κληση
                     </button>
-                    <button id="snap" class="btn btn-success">
-                        <span class="glyphicon glyphicon-camera"></span>
-                    </button>
-                    <button id="hangup" class="btn btn-danger">
-                        <span class="glyphicon glyphicon-ban-circle"></span>
+                   
+                    <button id="hangup">
+                       Αποσυνδεση
                     </button>                    
                 </div>
             </div>
@@ -102,7 +88,7 @@
 var urlargs         = urlparams();
 var my_number       = PUBNUB.$('my-number');
 var my_link         = PUBNUB.$('my-number-link');
-var number          = urlargs.number || Math.floor(Math.random()*999+1);
+var number          = urlargs.number || Math.floor(Math.random()*100+1);
 
 my_number.number    = number;
 my_number.innerHTML = ''+my_number.number;
@@ -164,8 +150,6 @@ function connected(session) {
     video_out.appendChild(session.video);
 
     PUBNUB.$('number').value = ''+session.number;
-    sounds.play('sound/hi');
-    console.log("Hi!");
 }
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -174,19 +158,10 @@ function connected(session) {
 function ended(session) {
     clearInterval(thumbnail.ival);
     thumbnail.ival = 0;
-    set_icon('facetime-video');
     img_out.innerHTML = '';
-    sounds.play('sound/goodbye');
-    console.log("Bye!");
+
 }
 
-// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-// Video Session Ended
-// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-function set_icon(icon) {
-    video_out.innerHTML = '<span class="glyphicon glyphicon-' +
-        icon + '"></span>';
-}
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 // Start Phone Call
@@ -197,17 +172,13 @@ function dial(number) {
 
     // No Dupelicate Dialing Allowed
     if (!session) return;
-
-    // Show Connecting Status
-    set_icon('send');
 }
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 // Ready to Send or Receive Calls
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 phone.ready(function(){
-    // Ready To Call
-    set_icon('facetime-video');
+
 
     // Auto Call
     if ('call' in urlargs) {
@@ -226,7 +197,6 @@ phone.ready(function(){
     // Hanup Call
     PUBNUB.bind( 'mousedown,touchstart', PUBNUB.$('hangup'), function() {
         phone.hangup();
-        set_icon('facetime-video');
     } );
 
     // Take Picture
@@ -235,7 +205,7 @@ phone.ready(function(){
 
         if (!(photo && photo.image))
             return console.error(
-                '%c Connect your video with a partner first.',
+                '%c συνδεσου πρωτα.',
                 'font-size:30px;background:#f00;color:#fff'
             );
 
@@ -318,9 +288,8 @@ function safetxt(text) {
 // Problem Occured During Init
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 phone.unable(function(details){
-    console.log("Alert! - Reload Page.");
+    console.log("Reload Page.");
     console.log(details);
-    set_icon('remove');
 });
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
