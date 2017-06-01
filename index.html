@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <head>
-    <title>WebRTC Simple Calling API + Mobile</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
-    <link href="css/styles.css" rel="stylesheet" type="text/css">
+    <title>WebRTC</title>
+
 </head>
 <body>
 
@@ -24,13 +21,13 @@
                     this is <strong>your phone number</strong>
                 </div>
                 <div id="my-number-permalink">
-                    <span class="glyphicon glyphicon-link"></span>
+                    
                     call link:
                     <a id="my-number-link" href="...">https://...</a>
                 </div>
             </div>
             <div id="pubnub-chat-section" class="text-center">
-                <input id="pubnub-chat-input" type="text" placeholder="chat here">
+                <input id="pubnub-chat-input" type="text" placeholder="chat">
                 <div id="pubnub-chat-output"><div></div></div>
             </div>
         </div>
@@ -47,14 +44,12 @@
                             <div id="video-self"></div>
                         </div>
                         <div id="video-display">
-                            <span class="glyphicon glyphicon-flash"></span>
+                            <span class=""></span>
                         </div>
                     </div>
                     <div id="pubnub-relative">
                         <div id="video-thumbnail"></div>
-                        <div id="pubnub-logo">
-                            <div id="pubnub-logo-img"></div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -64,20 +59,18 @@
                 <div class="col-sm-6 col-xs-7">
                     <div class="form-group"><div class="input-group">
                     <div class="input-group-addon">
-                        <span class="glyphicon glyphicon-th"></span>
+                        <span class=""></span>
                     </div>
-                    <input id="number" class="form-control" type="number" placeholder="Type Recipient's #">
+                    <input id="number" class="form-control" type="number" placeholder="αριθμος κλησης">
                     </div></div>
                 </div>
                 <div class="col-sm-6 col-xs-5 dial-buttons">
-                    <button id="dial" class="btn btn-primary">
-                        <span class="glyphicon glyphicon-earphone"></span>
+                    <button id="κληση" class="btn btn-primary">
+                        
                     </button>
-                    <button id="snap" class="btn btn-success">
-                        <span class="glyphicon glyphicon-camera"></span>
-                    </button>
-                    <button id="hangup" class="btn btn-danger">
-                        <span class="glyphicon glyphicon-ban-circle"></span>
+                   
+                    <button id="αποσυνδεση" class="btn btn-danger">
+                        
                     </button>                    
                 </div>
             </div>
@@ -85,14 +78,7 @@
     </div>
 </div>
 
-<!-- =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- -->
-<!-- WebRTC Peer Connections -->
-<!-- =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- -->
-<!-- IMPORTANT: THIS IS AN UNMINIFIED DEVELOPMENT PUBNUB LIBRARY 
-    replace this with the latest versioned, minified CDN lib link before 
-    you deploy your app to a production enviornment.
-    https://github.com/pubnub/javascript#cdn-links
--->
+
 <script src="https://cdn.pubnub.com/pubnub.js"></script>
 
 <!-- WebRTC SDK -->
@@ -168,8 +154,7 @@ function connected(session) {
     video_out.appendChild(session.video);
 
     PUBNUB.$('number').value = ''+session.number;
-    sounds.play('sound/hi');
-    console.log("Hi!");
+
 }
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -178,17 +163,14 @@ function connected(session) {
 function ended(session) {
     clearInterval(thumbnail.ival);
     thumbnail.ival = 0;
-    set_icon('facetime-video');
     img_out.innerHTML = '';
-    sounds.play('sound/goodbye');
-    console.log("Bye!");
 }
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 // Video Session Ended
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 function set_icon(icon) {
-    video_out.innerHTML = '<span class="glyphicon glyphicon-' +
+    video_out.innerHTML = '<span class="' +
         icon + '"></span>';
 }
 
@@ -202,16 +184,13 @@ function dial(number) {
     // No Dupelicate Dialing Allowed
     if (!session) return;
 
-    // Show Connecting Status
-    set_icon('send');
+  
 }
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 // Ready to Send or Receive Calls
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 phone.ready(function(){
-    // Ready To Call
-    set_icon('facetime-video');
 
     // Auto Call
     if ('call' in urlargs) {
@@ -230,12 +209,8 @@ phone.ready(function(){
     // Hanup Call
     PUBNUB.bind( 'mousedown,touchstart', PUBNUB.$('hangup'), function() {
         phone.hangup();
-        set_icon('facetime-video');
     } );
 
-    // Take Picture
-    PUBNUB.bind( 'mousedown,touchstart', PUBNUB.$('snap'), function() {
-        var photo = phone.snap();
 
         if (!(photo && photo.image))
             return console.error(
@@ -322,9 +297,8 @@ function safetxt(text) {
 // Problem Occured During Init
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 phone.unable(function(details){
-    console.log("Alert! - Reload Page.");
+    console.log("Reload Page.");
     console.log(details);
-    set_icon('remove');
 });
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
