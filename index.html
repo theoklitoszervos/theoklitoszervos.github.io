@@ -47,12 +47,14 @@
                             <div id="video-self"></div>
                         </div>
                         <div id="video-display">
-                            <span class=""></span>
+                            <span class="glyphicon glyphicon-flash"></span>
                         </div>
                     </div>
                     <div id="pubnub-relative">
                         <div id="video-thumbnail"></div>
-                        
+                        <div id="pubnub-logo">
+                            <div id="pubnub-logo-img"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -62,19 +64,20 @@
                 <div class="col-sm-6 col-xs-7">
                     <div class="form-group"><div class="input-group">
                     <div class="input-group-addon">
-                       
+                        <span class="glyphicon glyphicon-th"></span>
+                    </div>
                     <input id="number" class="form-control" type="number" placeholder="Type Recipient's #">
                     </div></div>
                 </div>
                 <div class="col-sm-6 col-xs-5 dial-buttons">
                     <button id="dial" class="btn btn-primary">
-                        
+                        <span class="glyphicon glyphicon-earphone"></span>
                     </button>
                     <button id="snap" class="btn btn-success">
-                        
+                        <span class="glyphicon glyphicon-camera"></span>
                     </button>
                     <button id="hangup" class="btn btn-danger">
-                      
+                        <span class="glyphicon glyphicon-ban-circle"></span>
                     </button>                    
                 </div>
             </div>
@@ -94,7 +97,7 @@
 
 <!-- WebRTC SDK -->
 <script src="js/webrtc.js"></script>
-
+<script src="js/sound.js"></script>
 <script>(function(){
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -165,7 +168,7 @@ function connected(session) {
     video_out.appendChild(session.video);
 
     PUBNUB.$('number').value = ''+session.number;
-
+    sounds.play('sound/hi');
     console.log("Hi!");
 }
 
@@ -175,8 +178,9 @@ function connected(session) {
 function ended(session) {
     clearInterval(thumbnail.ival);
     thumbnail.ival = 0;
+    set_icon('facetime-video');
     img_out.innerHTML = '';
-
+    sounds.play('sound/goodbye');
     console.log("Bye!");
 }
 
@@ -184,8 +188,8 @@ function ended(session) {
 // Video Session Ended
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 function set_icon(icon) {
-    video_out.innerHTML = '' +
-        icon + '">';
+    video_out.innerHTML = '<span class="glyphicon glyphicon-' +
+        icon + '"></span>';
 }
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -198,7 +202,8 @@ function dial(number) {
     // No Dupelicate Dialing Allowed
     if (!session) return;
 
-
+    // Show Connecting Status
+    set_icon('send');
 }
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -206,7 +211,7 @@ function dial(number) {
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 phone.ready(function(){
     // Ready To Call
-
+    set_icon('facetime-video');
 
     // Auto Call
     if ('call' in urlargs) {
