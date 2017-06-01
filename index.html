@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <head>
-    <title>WebRTC</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WebRTC Simple Calling API + Mobile</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="css/styles.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 
@@ -22,13 +24,13 @@
                     this is <strong>your phone number</strong>
                 </div>
                 <div id="my-number-permalink">
-                    
+                    <span class="glyphicon glyphicon-link"></span>
                     call link:
                     <a id="my-number-link" href="...">https://...</a>
                 </div>
             </div>
             <div id="pubnub-chat-section" class="text-center">
-                <input id="pubnub-chat-input" type="text" placeholder="chat">
+                <input id="pubnub-chat-input" type="text" placeholder="chat here">
                 <div id="pubnub-chat-output"><div></div></div>
             </div>
         </div>
@@ -60,16 +62,19 @@
                 <div class="col-sm-6 col-xs-7">
                     <div class="form-group"><div class="input-group">
                     <div class="input-group-addon">
-                        <span class=""></span>
-                    </div>
-                    <input id="number" class="form-control" type="number" placeholder="αριθμος κλησης">
+                       
+                    <input id="number" class="form-control" type="number" placeholder="Type Recipient's #">
                     </div></div>
                 </div>
-                
-                    <button id="κληση" class="btn btn-primary">  
+                <div class="col-sm-6 col-xs-5 dial-buttons">
+                    <button id="dial" class="btn btn-primary">
+                        
                     </button>
-                   
-                    <button id="αποσυνδεση" class="btn btn-danger">
+                    <button id="snap" class="btn btn-success">
+                        
+                    </button>
+                    <button id="hangup" class="btn btn-danger">
+                      
                     </button>                    
                 </div>
             </div>
@@ -77,11 +82,18 @@
     </div>
 </div>
 
-
+<!-- =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- -->
+<!-- WebRTC Peer Connections -->
+<!-- =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- -->
+<!-- IMPORTANT: THIS IS AN UNMINIFIED DEVELOPMENT PUBNUB LIBRARY 
+    replace this with the latest versioned, minified CDN lib link before 
+    you deploy your app to a production enviornment.
+    https://github.com/pubnub/javascript#cdn-links
+-->
 <script src="https://cdn.pubnub.com/pubnub.js"></script>
 
 <!-- WebRTC SDK -->
-<script src="webrtc.js"></script>
+<script src="js/webrtc.js"></script>
 
 <script>(function(){
 
@@ -154,6 +166,7 @@ function connected(session) {
 
     PUBNUB.$('number').value = ''+session.number;
 
+    console.log("Hi!");
 }
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -163,14 +176,16 @@ function ended(session) {
     clearInterval(thumbnail.ival);
     thumbnail.ival = 0;
     img_out.innerHTML = '';
+
+    console.log("Bye!");
 }
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 // Video Session Ended
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 function set_icon(icon) {
-    video_out.innerHTML = '<span class="' +
-        icon + '"></span>';
+    video_out.innerHTML = '' +
+        icon + '">';
 }
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -183,13 +198,15 @@ function dial(number) {
     // No Dupelicate Dialing Allowed
     if (!session) return;
 
-  
+
 }
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 // Ready to Send or Receive Calls
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 phone.ready(function(){
+    // Ready To Call
+
 
     // Auto Call
     if ('call' in urlargs) {
@@ -208,8 +225,12 @@ phone.ready(function(){
     // Hanup Call
     PUBNUB.bind( 'mousedown,touchstart', PUBNUB.$('hangup'), function() {
         phone.hangup();
+        set_icon('facetime-video');
     } );
 
+    // Take Picture
+    PUBNUB.bind( 'mousedown,touchstart', PUBNUB.$('snap'), function() {
+        var photo = phone.snap();
 
         if (!(photo && photo.image))
             return console.error(
@@ -296,8 +317,9 @@ function safetxt(text) {
 // Problem Occured During Init
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 phone.unable(function(details){
-    console.log("Reload Page.");
+    console.log("Alert! - Reload Page.");
     console.log(details);
+    set_icon('remove');
 });
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
